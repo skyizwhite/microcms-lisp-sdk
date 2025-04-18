@@ -1,0 +1,53 @@
+# microcms-lisp-sdk
+
+microcms-lisp-sdk is a Common Lisp SDK for interacting with [microCMS](https://microcms.io) via its REST API. It provides macros to define client functions for both list and object type endpoints.
+
+## ⚙️ Configuration
+
+Before making API requests, set your API key and service domain:
+
+```lisp
+(setf microcms:*api-key* "your-api-key")
+(setf microcms:*service-domain* "your-service-domain") ; e.g., "example" for example.microcms.io
+```
+
+## 🚀 Usage
+
+### List Type Endpoint
+
+Use `define-list-client` macro to define functions for list-type content.
+
+```lisp
+(microcms:define-list-client article)
+```
+This will generate the following functions:
+
+| Function Name | Arguments | Description |
+|---------------|-----------|-------------|
+| `get-article-list` | (&optional `query`) | Get a list of articles. |
+| `get-article-list-detail` | (`id`, &optional `query`) | Get details of a specific article by ID. |
+| `create-article` | (`content`, &optional `query`) | Create a new article with the given content. |
+| `update-article` | (`id`, `content`) | Update an existing article by its ID with new content. |
+| `delete-article` | (`id`) | Delete an article by its ID. |
+
+Note: query arguments should be provided as a property list (plist), where keys use kebab-case (e.g., `:draft-key`).
+
+### Object Type Endpoint
+
+Use `define-object-client` macro to define functions for object-type content.
+
+```lisp
+(microcms:define-object-client profile)
+```
+
+This will generate the following functions:
+
+| Function Name | Arguments | Description |
+|---------------|-----------|-------------|
+| `get-profile-object` | () | Retrieve the profile object. |
+| `update-profile` | (`content`) | Update the content of the profile object. |
+
+### 📄 License
+
+MIT License
+© 2025 Akira Tempaku
