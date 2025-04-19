@@ -24,9 +24,9 @@ This will generate the following functions:
 
 | Function Name | Arguments | Description |
 |---------------|-----------|-------------|
-| `get-article-list` | (&optional `query`) | Get a list of articles. |
-| `get-article-list-detail` | (`id`, &optional `query`) | Get details of a specific article by ID. |
-| `create-article` | (`content`, &optional `query`) | Create a new article with the given content. |
+| `get-article-list` | (&key `query`) | Get a list of articles. |
+| `get-article-list-detail` | (`id`, &key `query`) | Get details of a specific article by ID. |
+| `create-article` | (`content`, &key `query`) | Create a new article with the given content. |
 | `update-article` | (`id`, `content`) | Update an existing article by its ID with new content. |
 | `delete-article` | (`id`) | Delete an article by its ID. |
 
@@ -44,7 +44,7 @@ This will generate the following functions:
 
 | Function Name | Arguments | Description |
 |---------------|-----------|-------------|
-| `get-profile-object` | () | Retrieve the profile object. |
+| `get-profile-object` | (&key `query`) | Retrieve the profile object. |
 | `update-profile` | (`content`) | Update the content of the profile object. |
 
 ### 📄 License
