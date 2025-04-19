@@ -11,7 +11,8 @@
                 #:parse)
   (:import-from #:dexador
                 #:request
-                #:http-request-failed)
+                #:http-request-failed
+                #:response-status)
   (:import-from #:quri
                 #:make-uri
                 #:render-uri)
@@ -26,30 +27,31 @@
 (defparameter *api-key* nil)
 (defparameter *service-domain* nil)
 
-(defun %request (method endpoint &optional (path "") (query nil) (content nil))
-  (let* ((url (%build-uri endpoint path query))
-         (headers `(("X-MICROCMS-API-KEY" . ,*api-key*)
-                    ("Content-Type" . "application/json"))))
-    (format t "API request url: ~a~%" url)
+(defun %request (method endpoint &key path query content)
+  (or *service-domain* (error "microcms:*service-domain* is not configured."))
+  (or *api-key* (error "microcms:*api-key* is not configured."))
+  (let* ((url (%build-uri endpoint :path path :query query))
+         (req-headers `(("X-MICROCMS-API-KEY" . ,*api-key*)
+                        ("Content-Type" . "application/json"))))
     (handler-case
-        (multiple-value-bind (res-body status resp-headers)
+        (multiple-value-bind (res-body status res-headers)
             (request url
                      :method method
-                     :headers headers
+                     :headers req-headers
                      :content (and content (to-json content))
                      :force-binary nil)
-          (format t "API response status: ~a~%" status)
+          (format t "microCMS status: ~D~%" status)
           (when (and (stringp res-body)
-                     (search "application/json" (gethash "content-type" resp-headers)))
+                     (search "application/json" (gethash "content-type" res-headers)))
             (parse res-body)))
-      (http-request-failed ()
-        '(:|error| "API request failed")))))
+      (http-request-failed (e)
+        (format *error-output* "microCMS status: ~D~%" (response-status e))))))
 
-(defun %build-uri (endpoint &optional (path "") (query nil))
+(defun %build-uri (endpoint &key path query)
   (let ((uri (make-uri
               :scheme "https"
               :host (format nil "~A.microcms.io" *service-domain*)
-              :path (format nil "/api/v1/~A/~A" endpoint path)
+              :path (format nil "/api/v1/~A~@[/~A~]" endpoint path)
               :query (%build-query query))))
     (render-uri uri)))
 
@@ -60,28 +62,28 @@
 (defmacro define-list-client (endpoint)
   (let ((str-endpoint (string-downcase (string endpoint))))
     `(progn
-       (defun ,(symbolicate 'get- endpoint '-list) (&optional query)
-         (%request :get ,str-endpoint nil query))
-       (defun ,(symbolicate 'get- endpoint '-list-detail) (id &optional query)
-         (%request :get ,str-endpoint id query))
-       (defun ,(symbolicate 'create- endpoint) (content &optional query)
+       (defun ,(symbolicate 'get- endpoint '-list) (&key query)
+         (%request :get ,str-endpoint :query query))
+       (defun ,(symbolicate 'get- endpoint '-list-detail) (id &key query)
+         (%request :get ,str-endpoint :path id :query query))
+       (defun ,(symbolicate 'create- endpoint) (content &key query)
          (let ((id (getf content :|id|)))
            (%request (if id :put :post)
                      ,str-endpoint
-                     id
-                     query
-                     (remove-from-plist content :|id|))))
+                     :path id
+                     :query query
+                     :content (remove-from-plist content :|id|))))
        (defun ,(symbolicate 'update- endpoint) (id content)
-         (%request :patch ,str-endpoint id nil content))
+         (%request :patch ,str-endpoint :path id :content content))
        (defun ,(symbolicate 'delete- endpoint) (id)
-         (%request :delete ,str-endpoint id))
+         (%request :delete ,str-endpoint :path id))
        nil)))
 
 (defmacro define-object-client (endpoint)
   (let ((str-endpoint (string-downcase (string endpoint))))
     `(progn
-       (defun ,(symbolicate 'get- endpoint '-object) ()
-         (%request :get ,str-endpoint))
+       (defun ,(symbolicate 'get- endpoint '-object) (&key query)
+         (%request :get ,str-endpoint :query query))
        (defun ,(symbolicate 'update- endpoint) (content)
-         (%request :patch ,str-endpoint nil nil content))
+         (%request :patch ,str-endpoint :content content))
        nil)))
