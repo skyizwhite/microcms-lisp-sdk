@@ -2,8 +2,6 @@
   (:nicknames #:microcms/main)
   (:use #:cl)
   (:import-from #:alexandria
-                #:alist-plist
-                #:assoc-value
                 #:remove-from-plist
                 #:symbolicate)
   (:import-from #:jonathan
