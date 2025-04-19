@@ -28,30 +28,26 @@
 (defun %request (method endpoint &key path query content)
   (or *service-domain* (error "microcms:*service-domain* is not configured."))
   (or *api-key* (error "microcms:*api-key* is not configured."))
-  (let* ((url (%build-uri endpoint :path path :query query))
-         (req-headers `(("X-MICROCMS-API-KEY" . ,*api-key*)
-                        ("Content-Type" . "application/json"))))
-    (handler-case
-        (multiple-value-bind (res-body status res-headers)
-            (request url
-                     :method method
-                     :headers req-headers
-                     :content (and content (to-json content))
-                     :force-binary nil)
-          (format t "microCMS status: ~D~%" status)
-          (when (and (stringp res-body)
-                     (search "application/json" (gethash "content-type" res-headers)))
-            (parse res-body)))
-      (http-request-failed (e)
-        (format *error-output* "microCMS status: ~D~%" (response-status e))))))
+  (handler-case
+      (multiple-value-bind (res-body status res-headers)
+          (request (%build-uri endpoint :path path :query query)
+                   :method method
+                   :headers `(("X-MICROCMS-API-KEY" . ,*api-key*)
+                              ("Content-Type" . "application/json"))
+                   :content (and content (to-json content))
+                   :force-binary nil)
+        (format t "microCMS status: ~D~%" status)
+        (when (and (stringp res-body)
+                   (search "application/json" (gethash "content-type" res-headers)))
+          (parse res-body)))
+    (http-request-failed (e)
+      (format *error-output* "microCMS status: ~D~%" (response-status e)))))
 
 (defun %build-uri (endpoint &key path query)
-  (let ((uri (make-uri
-              :scheme "https"
-              :host (format nil "~A.microcms.io" *service-domain*)
-              :path (format nil "/api/v1/~A~@[/~A~]" endpoint path)
-              :query (%build-query query))))
-    (render-uri uri)))
+  (render-uri (make-uri :scheme "https"
+                        :host (format nil "~A.microcms.io" *service-domain*)
+                        :path (format nil "/api/v1/~A~@[/~A~]" endpoint path)
+                        :query (%build-query query))))
 
 (defun %build-query (query)
   (loop :for (key val) :on query :by #'cddr
