@@ -3,9 +3,10 @@
   (:use #:cl)
   (:import-from #:alexandria
                 #:remove-from-plist
-                #:symbolicate)
-  (:import-from #:jonathan
-                #:to-json
+                #:symbolicate
+                #:plist-hash-table)
+  (:import-from #:com.inuoe.jzon
+                #:stringify
                 #:parse)
   (:import-from #:dexador
                 #:request
@@ -34,7 +35,7 @@
                    :method method
                    :headers `(("X-MICROCMS-API-KEY" . ,*api-key*)
                               ("Content-Type" . "application/json"))
-                   :content (and content (to-json content))
+                   :content (%build-content content)
                    :force-binary nil)
         (format t "microCMS status: ~D~%" status)
         (when (and (stringp res-body)
@@ -52,6 +53,9 @@
 (defun %build-query (query)
   (loop :for (key val) :on query :by #'cddr
         :collect (cons (to-camel-case (symbol-name key)) val)))
+
+(defun %build-content (content)
+  (and content (stringify (plist-hash-table content))))
 
 (defmacro define-list-client (endpoint)
   (let ((str-endpoint (string-downcase (string endpoint))))

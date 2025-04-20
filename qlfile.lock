@@ -10,10 +10,10 @@
  (:class qlot/source/ql:source-ql
   :initargs (:%version :latest)
   :version "ql-2024-10-12"))
-("jonathan" .
+("jzon" .
  (:class qlot/source/ql:source-ql
   :initargs (:%version :latest)
-  :version "ql-2020-09-25"))
+  :version "ql-2024-10-12"))
 ("quri" .
  (:class qlot/source/ql:source-ql
   :initargs (:%version :latest)
