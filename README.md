@@ -17,6 +17,9 @@ Before making API requests, set your API key and service domain:
 
 Use `define-list-client` macro to define functions for list-type content.
 
+`query` and `content` must be provided as property list (plist), with keys written in kebab-case (e.g., `:draft-key`).
+The JSON response from the microCMS API are automatically converted into plist, with keys transformed from camelCase to kebab-case.
+
 ```lisp
 (microcms:define-list-client article)
 ```
@@ -29,8 +32,6 @@ This will generate the following functions:
 | `create-article` | (`content`, &key `query`) | Create a new article with the given content. |
 | `update-article` | (`id`, `content`) | Update an existing article by its ID with new content. |
 | `delete-article` | (`id`) | Delete an article by its ID. |
-
-Note: query arguments should be provided as a property list (plist), where keys use kebab-case (e.g., `:draft-key`).
 
 ### Object Type Endpoint
 

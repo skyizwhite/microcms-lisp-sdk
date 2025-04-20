@@ -5,4 +5,5 @@
   :license "MIT"
   :class :package-inferred-system
   :pathname "src"
-  :depends-on ("microcms/main"))
+  :depends-on ("microcms/main")
+  :in-order-to ((test-op (test-op "microcms-test"))))

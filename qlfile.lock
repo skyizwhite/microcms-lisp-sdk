@@ -22,3 +22,11 @@
  (:class qlot/source/ql:source-ql
   :initargs (:%version :latest)
   :version "ql-2015-06-08"))
+("rove" .
+ (:class qlot/source/git:source-git
+  :initargs (:remote-url "https://github.com/fukamachi/rove")
+  :version "git-9868028edf511da5fe61355881af9f4c35f051df"))
+("dissect" .
+ (:class qlot/source/git:source-git
+  :initargs (:remote-url "https://github.com/Shinmera/dissect")
+  :version "git-a70cabcd748cf7c041196efd711e2dcca2bbbb2c"))
