@@ -25,7 +25,7 @@ This will generate the following functions:
 | Function Name | Arguments | Description |
 |---------------|-----------|-------------|
 | `get-article-list` | (&key `query`) | Get a list of articles. |
-| `get-article-list-detail` | (`id`, &key `query`) | Get details of a specific article by ID. |
+| `get-article-detail` | (`id`, &key `query`) | Get details of a specific article by ID. |
 | `create-article` | (`content`, &key `query`) | Create a new article with the given content. |
 | `update-article` | (`id`, `content`) | Update an existing article by its ID with new content. |
 | `delete-article` | (`id`) | Delete an article by its ID. |

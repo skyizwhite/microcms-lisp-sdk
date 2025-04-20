@@ -58,30 +58,35 @@
   (and content (stringify (plist-hash-table content))))
 
 (defmacro define-list-client (endpoint)
-  (let ((str-endpoint (string-downcase (string endpoint))))
-    `(progn
-       (defun ,(symbolicate 'get- endpoint '-list) (&key query)
+  (let ((str-endpoint (string-downcase (string endpoint)))
+        (get-list (symbolicate 'get- endpoint '-list))
+        (get-detail (symbolicate 'get- endpoint '-detail))
+        (create (symbolicate 'create- endpoint))
+        (update (symbolicate 'update- endpoint))
+        (delete (symbolicate 'delete- endpoint)))
+    `(list
+       (defun ,get-list (&key query)
          (%request :get ,str-endpoint :query query))
-       (defun ,(symbolicate 'get- endpoint '-list-detail) (id &key query)
+       (defun ,get-detail (id &key query)
          (%request :get ,str-endpoint :path id :query query))
-       (defun ,(symbolicate 'create- endpoint) (content &key query)
+       (defun ,create (content &key query)
          (let ((id (getf content :|id|)))
            (%request (if id :put :post)
                      ,str-endpoint
                      :path id
                      :query query
                      :content (remove-from-plist content :|id|))))
-       (defun ,(symbolicate 'update- endpoint) (id content)
+       (defun ,update (id content)
          (%request :patch ,str-endpoint :path id :content content))
-       (defun ,(symbolicate 'delete- endpoint) (id)
-         (%request :delete ,str-endpoint :path id))
-       nil)))
+       (defun ,delete (id)
+         (%request :delete ,str-endpoint :path id)))))
 
 (defmacro define-object-client (endpoint)
-  (let ((str-endpoint (string-downcase (string endpoint))))
-    `(progn
-       (defun ,(symbolicate 'get- endpoint '-object) (&key query)
+  (let ((str-endpoint (string-downcase (string endpoint)))
+        (get-object (symbolicate 'get- endpoint '-object))
+        (update (symbolicate 'update- endpoint)))
+    `(list
+       (defun ,get-object (&key query)
          (%request :get ,str-endpoint :query query))
-       (defun ,(symbolicate 'update- endpoint) (content)
-         (%request :patch ,str-endpoint :content content))
-       nil)))
+       (defun ,update (content)
+         (%request :patch ,str-endpoint :content content)))))
