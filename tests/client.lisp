@@ -42,5 +42,5 @@
 
   (testing "define-object-client creates expected functions"
     (define-object-client config)
-    (ok (fboundp 'get-config-object))
+    (ok (fboundp 'get-config))
     (ok (fboundp 'update-config))))

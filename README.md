@@ -45,7 +45,7 @@ This will generate the following functions:
 
 | Function Name | Arguments | Description |
 |---------------|-----------|-------------|
-| `get-profile-object` | (&key `query`) | Retrieve the profile object. |
+| `get-profile` | (&key `query`) | Retrieve the profile object. |
 | `update-profile` | (`content`) | Update the content of the profile object. |
 
 ### 📄 License

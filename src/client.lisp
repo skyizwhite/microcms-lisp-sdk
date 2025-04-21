@@ -99,10 +99,10 @@
 
 (defmacro define-object-client (endpoint)
   (let ((str-endpoint (string-downcase (string endpoint)))
-        (get-object (symbolicate 'get- endpoint '-object))
+        (get (symbolicate 'get- endpoint))
         (update (symbolicate 'update- endpoint)))
     `(list
-       (defun ,get-object (&key query)
+       (defun ,get (&key query)
          (%request :get ,str-endpoint :query query))
        (defun ,update (content)
          (%request :patch ,str-endpoint :content content)))))
