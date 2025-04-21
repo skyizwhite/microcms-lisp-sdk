@@ -21,17 +21,17 @@ Use `define-list-client` macro to define functions for list-type content.
 The JSON response from the microCMS API are automatically converted into plist, with keys transformed from camelCase to kebab-case.
 
 ```lisp
-(microcms:define-list-client article)
+(microcms:define-list-client articles)
 ```
 This will generate the following functions:
 
 | Function Name | Arguments | Description |
 |---------------|-----------|-------------|
-| `get-article-list` | (&key `query`) | Get a list of articles. |
-| `get-article-detail` | (`id`, &key `query`) | Get details of a specific article by ID. |
-| `create-article` | (`content`, &key `query`) | Create a new article with the given content. |
-| `update-article` | (`id`, `content`) | Update an existing article by its ID with new content. |
-| `delete-article` | (`id`) | Delete an article by its ID. |
+| `get-articles-list` | (&key `query`) | Get a list of articles. |
+| `get-articles-detail` | (`id`, &key `query`) | Get details of a specific article by ID. |
+| `create-articles` | (`content`, &key `query`) | Create a new article with the given content. |
+| `update-articles` | (`id`, `content`) | Update an existing article by its ID with new content. |
+| `delete-articles` | (`id`) | Delete an article by its ID. |
 
 ### Object Type Endpoint
 
