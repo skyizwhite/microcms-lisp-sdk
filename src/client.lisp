@@ -81,28 +81,28 @@
         (update (symbolicate 'update- endpoint))
         (delete (symbolicate 'delete- endpoint)))
     `(list
-       (defun ,get-list (&key query)
-         (%request :get ,str-endpoint :query query))
-       (defun ,get-detail (id &key query)
-         (%request :get ,str-endpoint :path id :query query))
-       (defun ,create (content &key query)
-         (let ((id (getf content :id)))
-           (%request (if id :put :post)
-                     ,str-endpoint
-                     :path id
-                     :query query
-                     :content (remove-from-plist content :id))))
-       (defun ,update (id content)
-         (%request :patch ,str-endpoint :path id :content content))
-       (defun ,delete (id)
-         (%request :delete ,str-endpoint :path id)))))
+      (defun ,get-list (&key query)
+        (%request :get ,str-endpoint :query query))
+      (defun ,get-detail (id &key query)
+        (%request :get ,str-endpoint :path id :query query))
+      (defun ,create (content &key query)
+        (let ((id (getf content :id)))
+          (%request (if id :put :post)
+                    ,str-endpoint
+                    :path id
+                    :query query
+                    :content (remove-from-plist content :id))))
+      (defun ,update (id content)
+        (%request :patch ,str-endpoint :path id :content content))
+      (defun ,delete (id)
+        (%request :delete ,str-endpoint :path id)))))
 
 (defmacro define-object-client (endpoint)
   (let ((str-endpoint (string-downcase (string endpoint)))
         (get (symbolicate 'get- endpoint))
         (update (symbolicate 'update- endpoint)))
     `(list
-       (defun ,get (&key query)
-         (%request :get ,str-endpoint :query query))
-       (defun ,update (content)
-         (%request :patch ,str-endpoint :content content)))))
+      (defun ,get (&key query)
+        (%request :get ,str-endpoint :query query))
+      (defun ,update (content)
+        (%request :patch ,str-endpoint :content content)))))
