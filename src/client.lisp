@@ -60,9 +60,14 @@
   (loop :for (key val) :on plist :by #'cddr
         :collect (cons (to-camel-case (symbol-name key)) val)))
 
-(defun %camel-case-hash-table->kebab-case-plist (hash-table)
-  (loop :for (key . val) :in (hash-table-alist hash-table)
-        :append (list (make-keyword (string-upcase (to-kebab-case key))) val)))
+(defun %jzon-object->kebab-case-plist (obj)
+  (typecase obj
+    (simple-vector (mapcar #'%jzon-object->kebab-case-plist
+                           (coerce obj 'list)))
+    (hash-table (loop :for (key . val) :in (hash-table-alist obj)
+                      :append (list (make-keyword (string-upcase (to-kebab-case key)))
+                                    (%jzon-object->kebab-case-plist val))))
+    (t obj)))
 
 (defun %build-query (query)
   (%kebab-case-plist->camel-case-alist query))
@@ -71,7 +76,7 @@
   (and content (stringify (alist-hash-table (%kebab-case-plist->camel-case-alist content)))))
 
 (defun %parse-response (body)
-  (%camel-case-hash-table->kebab-case-plist (parse body)))
+  (%jzon-object->kebab-case-plist (parse body)))
 
 (defmacro define-list-client (endpoint)
   (let ((str-endpoint (string-downcase (string endpoint)))
