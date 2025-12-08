@@ -2,7 +2,7 @@
 
 microcms-lisp-sdk is a Common Lisp SDK for interacting with [microCMS](https://microcms.io) via its REST API. It provides macros to define client functions for both list and object type endpoints.
 
-## ⚙️ Configuration
+## Configuration
 
 Before making API requests, set your API key and service domain:
 
@@ -11,7 +11,7 @@ Before making API requests, set your API key and service domain:
 (setf microcms:*service-domain* "your-service-domain") ; e.g., "example" for example.microcms.io
 ```
 
-## 🚀 Usage
+## Usage
 
 ### List Type Endpoint
 
@@ -21,17 +21,17 @@ Use `define-list-client` macro to define functions for list-type content.
 The JSON response from the microCMS API are automatically converted into plist, with keys transformed from camelCase to kebab-case.
 
 ```lisp
-(microcms:define-list-client articles)
+(microcms:define-list-client article)
 ```
 This will generate the following functions:
 
 | Function Name | Arguments | Description |
 |---------------|-----------|-------------|
-| `get-articles-list` | (&key `query`) | Get a list of articles. |
-| `get-articles-detail` | (`id`, &key `query`) | Get details of a specific article by ID. |
-| `create-articles` | (`content`, &key `query`) | Create a new article with the given content. |
-| `update-articles` | (`id`, `content`) | Update an existing article by its ID with new content. |
-| `delete-articles` | (`id`) | Delete an article by its ID. |
+| `get-article-list` | (&key `query`) | Get a list of articles. |
+| `get-article-detail` | (`id`, &key `query`) | Get details of a specific article by ID. |
+| `create-article` | (`content`, &key `query`) | Create a new article with the given content. |
+| `update-article` | (`id`, `content`) | Update an existing article by its ID with new content. |
+| `delete-article` | (`id`) | Delete an article by its ID. |
 
 ### Object Type Endpoint
 
@@ -48,7 +48,7 @@ This will generate the following functions:
 | `get-profile` | (&key `query`) | Retrieve the profile object. |
 | `update-profile` | (`content`) | Update the content of the profile object. |
 
-### 📄 License
+### License
 
 MIT License
 © 2025 Akira Tempaku
