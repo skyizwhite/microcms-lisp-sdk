@@ -30,17 +30,3 @@
     (let ((result (%parse-response "{\"myTitle\": \"Hello\", \"createdAt\": \"2025-04-01\"}")))
       (ok (equal (getf result :my-title) "Hello"))
       (ok (equal (getf result :created-at) "2025-04-01")))))
-
-(deftest macro-test
-  (testing "define-list-client creates expected functions"
-    (define-list-client blog)
-    (ok (fboundp 'get-blog-list))
-    (ok (fboundp 'get-blog-detail))
-    (ok (fboundp 'create-blog))
-    (ok (fboundp 'update-blog))
-    (ok (fboundp 'delete-blog)))
-
-  (testing "define-object-client creates expected functions"
-    (define-object-client config)
-    (ok (fboundp 'get-config))
-    (ok (fboundp 'update-config))))

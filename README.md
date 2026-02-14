@@ -15,38 +15,23 @@ Before making API requests, set your API key and service domain:
 
 ### List Type Endpoint
 
-Use `define-list-client` macro to define functions for list-type content.
-
 `query` and `content` must be provided as property list (plist), with keys written in kebab-case (e.g., `:draft-key`).
 The JSON response from the microCMS API are automatically converted into plist, with keys transformed from camelCase to kebab-case.
 
-```lisp
-(microcms:define-list-client article)
-```
-This will generate the following functions:
-
 | Function Name | Arguments | Description |
 |---------------|-----------|-------------|
-| `get-article-list` | (&key `query`) | Get a list of articles. |
-| `get-article-detail` | (`id`, &key `query`) | Get details of a specific article by ID. |
-| `create-article` | (`content`, &key `query`) | Create a new article with the given content. |
-| `update-article` | (`id`, `content`) | Update an existing article by its ID with new content. |
-| `delete-article` | (`id`) | Delete an article by its ID. |
+| `get-list` | (`endpoint` &key `query`) | Get a list of articles. |
+| `get-item` | (`endpoint` `id`, &key `query`) | Get details of a specific article by ID. |
+| `create-item` | (`endpoint` `content`, &key `query`) | Create a new article with the given content. |
+| `update-item` | (`endpoint` `id`, `content`) | Update an existing article by its ID with new content. |
+| `delete-item` | (`endpoint` `id`) | Delete an article by its ID. |
 
 ### Object Type Endpoint
 
-Use `define-object-client` macro to define functions for object-type content.
-
-```lisp
-(microcms:define-object-client profile)
-```
-
-This will generate the following functions:
-
 | Function Name | Arguments | Description |
 |---------------|-----------|-------------|
-| `get-profile` | (&key `query`) | Retrieve the profile object. |
-| `update-profile` | (`content`) | Update the content of the profile object. |
+| `get-object` | (`endpoint` &key `query`) | Retrieve the profile object. |
+| `update-object` | (`endpoint` `content`) | Update the content of the profile object. |
 
 ### License
 

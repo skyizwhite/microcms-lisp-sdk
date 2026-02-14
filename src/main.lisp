@@ -4,6 +4,11 @@
         #:microcms/client)
   (:export #:*api-key*
            #:*service-domain*
-           #:define-list-client
-           #:define-object-client))
+           #:get-list
+           #:get-item
+           #:create-item
+           #:update-item
+           #:delete-item
+           #:get-object
+           #:update-object))
 (in-package :microcms)

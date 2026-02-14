@@ -21,8 +21,13 @@
                 #:to-kebab-case)
   (:export #:*api-key*
            #:*service-domain*
-           #:define-list-client
-           #:define-object-client
+           #:get-list
+           #:get-item
+           #:create-item
+           #:update-item
+           #:delete-item
+           #:get-object
+           #:update-object
            #:%build-uri
            #:%build-query
            #:%build-content
@@ -78,36 +83,28 @@
 (defun %parse-response (body)
   (%jzon-object->kebab-case-plist (parse body)))
 
-(defmacro define-list-client (endpoint)
-  (let ((str-endpoint (string-downcase (string endpoint)))
-        (get-list (symbolicate 'get- endpoint '-list))
-        (get-detail (symbolicate 'get- endpoint '-detail))
-        (create (symbolicate 'create- endpoint))
-        (update (symbolicate 'update- endpoint))
-        (delete (symbolicate 'delete- endpoint)))
-    `(list
-      (defun ,get-list (&key query)
-        (%request :get ,str-endpoint :query query))
-      (defun ,get-detail (id &key query)
-        (%request :get ,str-endpoint :path id :query query))
-      (defun ,create (content &key query)
-        (let ((id (getf content :id)))
-          (%request (if id :put :post)
-                    ,str-endpoint
-                    :path id
-                    :query query
-                    :content (remove-from-plist content :id))))
-      (defun ,update (id content)
-        (%request :patch ,str-endpoint :path id :content content))
-      (defun ,delete (id)
-        (%request :delete ,str-endpoint :path id)))))
+(defun get-list (endpoint &key query)
+  (%request :get endpoint :query query))
 
-(defmacro define-object-client (endpoint)
-  (let ((str-endpoint (string-downcase (string endpoint)))
-        (get (symbolicate 'get- endpoint))
-        (update (symbolicate 'update- endpoint)))
-    `(list
-      (defun ,get (&key query)
-        (%request :get ,str-endpoint :query query))
-      (defun ,update (content)
-        (%request :patch ,str-endpoint :content content)))))
+(defun get-item (endpoint id &key query)
+  (%request :get endpoint :path id :query query))
+
+(defun create-item (endpoint content &key query)
+  (let ((id (getf content :id)))
+    (%request (if id :put :post)
+              endpoint
+              :path id
+              :query query
+              :content (remove-from-plist content :id))))
+
+(defun update-item (endpoint id content)
+  (%request :patch endpoint :path id :content content))
+
+(defun delete-item (endpoint id)
+  (%request :delete endpoint :path id))
+
+(defun get-object (endpoint &key query)
+  (%request :get endpoint :query query))
+
+(defun update-object (endpoint content)
+  (%request :patch endpoint :content content))
