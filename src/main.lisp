@@ -10,5 +10,8 @@
            #:update-item
            #:delete-item
            #:get-object
-           #:update-object))
+           #:update-object
+           #:microcms-error
+           #:microcms-error-status
+           #:microcms-error-body))
 (in-package :microcms)

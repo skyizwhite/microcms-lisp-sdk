@@ -12,7 +12,8 @@
   (:import-from #:dexador
                 #:request
                 #:http-request-failed
-                #:response-status)
+                #:response-status
+                #:response-body)
   (:import-from #:quri
                 #:make-uri
                 #:render-uri)
@@ -28,6 +29,9 @@
            #:delete-item
            #:get-object
            #:update-object
+           #:microcms-error
+           #:microcms-error-status
+           #:microcms-error-body
            #:%build-uri
            #:%build-query
            #:%build-content
@@ -36,6 +40,14 @@
 
 (defparameter *api-key* nil)
 (defparameter *service-domain* nil)
+
+(define-condition microcms-error (error)
+  ((status :initarg :status :reader microcms-error-status)
+   (body :initarg :body :reader microcms-error-body))
+  (:report (lambda (condition stream)
+             (format stream "microCMS request failed with status ~D: ~A"
+                     (microcms-error-status condition)
+                     (microcms-error-body condition)))))
 
 (defun %request (method endpoint &key path query content)
   (or *service-domain* (error "microcms:*service-domain* is not configured."))
@@ -53,7 +65,9 @@
                    (search "application/json" (gethash "content-type" res-headers)))
           (%parse-response res-body)))
     (http-request-failed (e)
-      (format *error-output* "microCMS status: ~D~%" (response-status e)))))
+      (error 'microcms-error
+             :status (response-status e)
+             :body (response-body e)))))
 
 (defun %build-uri (endpoint &key path query)
   (render-uri (make-uri :scheme "https"
